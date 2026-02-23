@@ -27,12 +27,23 @@ class Interpreter:
         ans = self.stack.pop()
         print(ans)
 
-    def ADD_TWO_VAlUES(self):
+    def ADD_TWO_VALUES(self):
         first_num = self.stack.pop()
         second_num = self.stack.pop()
         total = first_num + second_num
         self.stack.append(total)
-    
+
+    def execute(self, what_to_run):
+            instructions = what_to_run["instructions"]
+            for each_step in instructions:
+                instruction, argument = each_step
+                argument = self.parse_argument(instructions,argument,what_to_run)
+                bytecode_method = getattr(self,instruction)
+                if argument is None:
+                    bytecode_method()
+                else:
+                    bytecode_method(argument)
+    """
     def run_code(self, what_to_run):
         instructions = what_to_run["instructions"]
         numbers = what_to_run["numbers"]
@@ -49,6 +60,11 @@ class Interpreter:
                 self.STORE_NAME(argument)
             elif instruction == "LOAD_NAME":
                 self.LOAD_NAME(argument)
+    """
+
+
+        
+        
 interpreter = Interpreter()
 
 what_to_run = {
@@ -65,7 +81,7 @@ what_to_run = {
 
 }
 
-interpreter.run_code(what_to_run)
+interpreter.execute(what_to_run)
     
 
 
