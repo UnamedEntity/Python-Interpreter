@@ -10,5 +10,5 @@ class VirtualMachine(object):
     
     def run_code(self, code, global_names=None, local_names=None):
         frame = self.make_frame(code, global_names == global_names, local_names == local_names)
-        self.run_frame(frame)
+        self.run_frame(frame) 
 
