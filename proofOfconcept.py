@@ -1,3 +1,5 @@
+import dis
+
 class Interpreter:
     def __init__(self):
         self.stack = []
@@ -64,7 +66,8 @@ what_to_run = {
 }
 
 interpreter.execute(what_to_run)
-    
+
+print(dis.dis(interpreter.execute))
 
 
 
