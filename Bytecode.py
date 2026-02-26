@@ -2,7 +2,7 @@ class VirtualMachineError(Exception):
     pass
 
 class VirtualMachine(object):
-    def __intit__(self):
+    def __init__(self):
         self.frames = []
         self.frame = None
         self.return_value = None
@@ -40,12 +40,8 @@ class VirtualMachine(object):
         else:
             self.frame = None
 
-    def run_frame(self, frame):
-        self.push_frame(frame)
-        try:
-            frame.run()
-        finally:
-            self.pop_frame()
+    def run_frame(self):
+        pass
     
 
 class Frame(object):
@@ -56,11 +52,11 @@ class Frame(object):
         self.prev_frame = prev_frame
         self.stack = []
         if prev_frame:  
-            self.builtins = prev_frame.builtins
+            self.builtin_names = prev_frame.builtin_names
         else:
-            self.builtins = local_names["__builtins__"]
-            if hasattr(self.builtins, "__dict__"):
-                self.builtins = self.builtins.__dict__
+            self.builtin_names = local_names["__builtins__"]
+            if hasattr(self.builtin_names, "__dict__"):
+                self.builtin_names = self.builtin_names.__dict__
         
         self.last_instruction = 0
         self.block_stack = []
