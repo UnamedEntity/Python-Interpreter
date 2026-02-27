@@ -43,8 +43,54 @@ class VirtualMachine(object):
         else:
             self.frame = None
 
+    def dispatch(self, byte_name, argument):
+        why = None
+        try:
+            bytecode_fn = getattr(self, 'byte_%s' % byte_name, None)
+            if bytecode_fn is None:
+                if byte_name.startswith('UNARY_'):
+                    self.unaryOperator(byte_name[6:])
+                elif byte_name.startswith('BINARY_'):
+                    self.binaryOperator(byte_name[7:])
+                else:
+                    raise VirtualMachineError(
+                        "unsupported bytecode type: %s" % byte_name
+                    )
+            else:
+                why = bytecode_fn(*argument)
+        except:
+            # deal with exceptions encountered while executing the op.
+            self.last_exception = sys.exc_info()[:2] + (None,)
+            why = 'exception'
+
+        return why
+
     def run_frame(self, frame):
-        pass
+        """Run a frame until it returns (somehow).
+        Exceptions are raised, the return value is returned.
+        """
+        self.push_frame(frame)
+        while True:
+            byte_name, arguments = self.parse_byte_and_args()
+
+            why = self.dispatch(byte_name, arguments)
+
+            # Deal with any block management we need to do
+            while why and frame.block_stack:
+                why = self.manage_block_stack(why)
+
+            if why:
+                break
+
+        self.pop_frame()
+
+        if why == 'exception':
+            exc, val, tb = self.last_exception
+            e = exc(val)
+            e.__traceback__ = tb
+            raise e
+
+        return self.return_value
 
     def top(self):
         return self.frame.stack[-1]
