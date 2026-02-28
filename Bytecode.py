@@ -1,4 +1,5 @@
 from importlib.metadata.diagnose import inspect
+import sys
 from wsgiref import types
 import dis
 
