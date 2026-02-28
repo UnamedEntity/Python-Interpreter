@@ -2,6 +2,11 @@ from importlib.metadata.diagnose import inspect
 import sys
 from wsgiref import types
 import dis
+from matplotlib import collections
+
+
+Block = collections.namedtuple("Block", "type, handler, stack_height") 
+
 
 class VirtualMachineError(Exception):
     pass
