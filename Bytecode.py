@@ -436,11 +436,17 @@ def make_cell(value):
 
 
 if __name__ == '__main__':
-    import marshal
-    with open('testcode.pyc', 'rb') as f:
-        magic = f.read(4)
-        moddate = f.read(4)
-        code = marshal.load(f)
+    import marshal, py_compile, os
+    filename = 'proofOfconcept.pyc' if os.path.exists('proofOfconcept.pyc') else 'proofOfconcept.py'
+    if filename.endswith('.pyc'):
+        with open(filename, 'rb') as f:
+            f.read(8)
+            code = marshal.load(f)
+    else:
+        code = compile(open(filename, 'r').read(), filename, 'exec')
+
+    if not hasattr(code, 'co_code'):
+        raise VirtualMachineError(f"loaded object is not a code object: {type(code)}")
 
     vm = VirtualMachine()
     vm.run_code(code)
