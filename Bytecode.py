@@ -433,3 +433,14 @@ class Function(object):
 def make_cell(value):
     fn = (lambda x: lambda: x)(value)
     return fn.__closure__[0]
+
+
+if __name__ == '__main__':
+    import marshal
+    with open('testcode.pyc', 'rb') as f:
+        magic = f.read(4)
+        moddate = f.read(4)
+        code = marshal.load(f)
+
+    vm = VirtualMachine()
+    vm.run_code(code)
