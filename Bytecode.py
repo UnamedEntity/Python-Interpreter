@@ -3,10 +3,10 @@ import operator
 import sys
 from wsgiref import types
 import dis
-from matplotlib import collections
+from collections import namedtuple
 
 
-Block = collections.namedtuple("Block", "type, handler, stack_height") 
+Block = namedtuple("Block", "type, handler, stack_height") 
 
 
 class VirtualMachineError(Exception):
